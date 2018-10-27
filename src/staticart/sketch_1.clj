@@ -13,7 +13,7 @@
     (apply q/line two-points)))
 
 (defn draw []
-  (q/background 200)
+  (q/background 100)
   (q/with-translation (mid-point)
-   (draw-plot f (w 0.0) (w 1.25) 2)))
+   (draw-plot f (w 0.0) (w 1.25) 1.3)))
 
