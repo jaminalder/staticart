@@ -1,6 +1,8 @@
 (ns staticart.draw
   (:require [quil.core :as q :include-macros true]))
 
+(def background q/background)
+
 (defn point [p]
   (q/point (nth p 0) (nth p 1)))
 

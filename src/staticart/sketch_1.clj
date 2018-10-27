@@ -1,19 +1,15 @@
 (ns staticart.sketch-1
-  (:require [quil.core :as q]
-            [staticart.screen-locations :refer :all]))
+  (:require [staticart.draw :as d]
+            [staticart.screen-locations :refer :all]
+            [staticart.subdivision :as sub]))
 
-(defn f [t]
-  [(* t (q/sin t))
-   (* t (q/cos t))])
-
-(defn draw-plot [f from to step]
-  (doseq [two-points (->> (range from to step)
-                          (map f)
-                          (partition 2 1))]
-    (apply q/line two-points)))
 
 (defn draw []
-  (q/background 100)
-  (q/with-translation (mid-point)
-   (draw-plot f (w 0.0) (w 1.25) 1.3)))
+  (d/background 360)
+  (let [tri [(point-on-screen 0.5 0.1)
+             (point-on-screen 0.1 0.9)
+             (point-on-screen 0.9 0.9)]
+        divided (sub/rec-divide-tris [tri] 5)]
+    (doseq [tri divided] (d/vertex tri true)))
+  )
 

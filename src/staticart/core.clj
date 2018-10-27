@@ -5,7 +5,8 @@
 
 (defn setup []
   (q/no-loop)
-  (q/color-mode :hsb))
+  (q/smooth)
+  (q/color-mode :hsb 360 100 100 1.0))
 
 (q/defsketch staticart
   :title "My Quil Sketch"
