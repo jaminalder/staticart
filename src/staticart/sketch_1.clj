@@ -18,7 +18,7 @@
                      (let [divided (sub/rec-divide-tris [t] 5)]
                        (for [n (range (* 2 (count divided)))] (rand-nth divided))))]
     (doseq [randtris subsubtris]
-      (apply d/fill (col/pick-color col/palette-ice2 0.2))
+      (apply d/fill (col/pick-color col/palette-soft1 0.2))
       (doseq [t randtris]
        (d/vertex t true))))
   (d/save "output.jpg"))
