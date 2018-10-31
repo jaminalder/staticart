@@ -13,3 +13,5 @@
 (defn mid-point [] (vec2 (w 0.5) (h 0.5)))
 
 (defn point-on-screen [ww hh] (vec2 (w ww) (h hh)))
+
+(def pos point-on-screen)
