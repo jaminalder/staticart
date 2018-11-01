@@ -7,9 +7,7 @@
 (defn draw []
   (d/background 360)
   (d/stroke 0)
-  (noise/noise-image-gray 300 6 0.01)
-  #_(doseq [y (range (:height settings))
-          x (range (:width settings))]
-    (q/set-pixel x y (q/color (* 0.7 x) (* 0.2 y) 80 1)))
+  #_(noise/noise-image 6 0.01)
+  (noise/noise-image-turb 6 0.01 #(* 420 (* (Math/sin (* % 0.01)) (Math/sin (* %2 0.01)))))
   (d/save "output.jpg"))
 
