@@ -18,7 +18,7 @@
       (recur (+ n (noise-in-octave x y s o)) (dec o))
       n)))
 
-(defn noise-image
+#_(defn noise-image
   [octaves scale]
   (let [r (rand-int 500)]
     (doseq [y (range (:height settings))
@@ -26,6 +26,14 @@
             :let [n (octave-noise2 (+ r x) (+ r y) scale octaves)
                   n (+ (* n 20) 60)]]
       (q/set-pixel x y (q/color 50 100 n 1)))))
+
+(defn noise-image
+  [ps color octaves scale]
+  (let [r (rand-int 500)]
+    (doseq [p ps
+            :let [m (octave-noise2 (+ r (first p)) (+ r (last p)) scale octaves)
+                  n (+ (nth color 2) (* m 20))]]
+      (q/set-pixel  (first p) (last p) (q/color (nth color 0) (nth color 1) n 1)))))
 
 (defn noise-image-turb
   [octaves scale turbulence]

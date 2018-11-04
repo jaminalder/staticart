@@ -5,7 +5,7 @@
 
 (defn divide-triangle [[a b c]]
   (let [[p1 p2] (max-key #(apply g/dist %) [a b] [a c] [b c])
-        pm (m/mix p1 p2 (rh/gauss 0.5 0.2))
+        pm (m/mix p1 p2 (rh/gauss 0.5 0.1))
         p3 (first (clojure.set/difference #{a b c} #{p1 p2}))]
     [[p3 p1 pm] [p3 p2 pm]]))
 
