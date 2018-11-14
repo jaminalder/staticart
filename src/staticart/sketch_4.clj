@@ -15,7 +15,10 @@
             [thi.ng.math.core :as m]
             [thi.ng.math.macros :as mm]))
 
-(set! *warn-on-reflection* false) ;; To avoid accidental reflection
+#_(set! *warn-on-reflection* false) ;; To avoid accidental reflection
+
+(defn make-int-matrix [width height]
+  ^"[[I" (make-array Integer/TYPE height width))
 
 (def ^"[[I" matrix (make-int-matrix (:width settings) (:height settings)))
 
@@ -25,16 +28,13 @@
 (defmacro aset2i [a x y v]
   `(aset ^"[I" (aget ~a ~y) ~x ~v))
 
-(defn make-int-matrix [width height]
-  ^"[[I" (make-array Integer/TYPE height width))
+(defn on-points [points f]
+  (time (doseq [[x y] points] (f matrix x y))))
 
 (defn on-matrix [f]
   (let [ps (for [x (range (alength ^"[I" (aget matrix 0)))
                  y (range (alength matrix))] [x y])]
     (on-points ps f)))
-
-(defn on-points [points f]
-  (time (doseq [[x y] points] (f matrix x y))))
 
 (defn draw-matrix []
   (on-matrix (fn [^"[[I" m x y] (q/set-pixel x y (aget2i m x y)))))
@@ -74,7 +74,7 @@
         tris (sub/rec-divide-tris (gu/tessellate-with-point full) 2)
         trips (map  points-in-triangle tris)]
     (doseq [ps trips]
-      (on-points ps (noise-function (c/pick-color c/palette-dark-red 1) 6 0.008 #(* 420 (* (Math/sin (* % 0.05)) (Math/sin (* %2 0.05)))))))
+      (on-points ps (noise-function (c/pick-color c/palette-dark-red 1) 6 0.006 #(* 420 (* (Math/sin (* % 0.1)) (Math/sin (* %2 0.1)))))))
     (draw-matrix)
     #_(doseq [t tris] (d/vertex t true)))
 

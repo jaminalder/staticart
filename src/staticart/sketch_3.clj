@@ -6,11 +6,26 @@
             [staticart.noise :as noise]
             [staticart.subdivision :as sub]
             [thi.ng.geom.core :as g]
+            [thi.ng.geom.matrix :refer [M32]]
             [thi.ng.geom.triangle :as tri]
             [thi.ng.geom.utils :as gu]
             [thi.ng.geom.utils.delaunay :as del]
             [thi.ng.geom.vector :as v :refer [vec2]]
-            [thi.ng.math.core :as m]))
+            [thi.ng.math.core :as m]
+            [thi.ng.math.macros :as mm]))
+
+(defn draw-matrix [matrix]
+  (doseq [x (range (count (aget matrix 0))) y (range (count matrix))]
+    (q/set-pixel x y (aget matrix x y))))
+
+
+
+(defn spiral
+  [center start end r1 r2 steps]
+  (map
+   (fn [r theta] (m/+ (g/as-cartesian (vec2 r theta)) center))
+   (range r1 r2 (mm/subdiv r2 r1 steps))
+   (range start end (mm/subdiv end start steps))))
 
 (defn points-in-triangle [triangle]
   (let [tri (tri/triangle2 triangle)
