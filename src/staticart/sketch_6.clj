@@ -16,15 +16,15 @@
             [thi.ng.math.core :as m]
             [thi.ng.math.macros :as mm]))
 
-(defn noise-function [color octaves scale turbulence]
+(defn noise-function [color octaves scale turbh turbb]
   (let [r 3]
     (fn [^"[[I" m x y]
-      (let [[x' y'] (turbulence x y)
-            x' (+ x x')
-            y' (+ y y')
-            n (noise/octave-noise2 x' y' scale octaves)
-            newb (+ (nth color 2) (* n 1))
-            newh (+ 200 (- (nth color 0) (* n 50)))]
+      (let [[xh yh] (turbh x y)
+            h (noise/octave-noise2 xh yh scale octaves)
+            newh (+ 12 (- (nth color 0) (* h 25)))
+            [xb yb] (turbb x y)
+            b (noise/octave-noise2 xb yb scale octaves)
+            newb (+ (nth color 2) (* b 50))]
         (mt/aset2i m x y ^int (q/color newh (nth color 1) newb 1))))))
 
 (defn attractor [x y a1 a2 a3 a4 a5 a6]
@@ -38,8 +38,9 @@
   (d/background 0 0 0 0)
 
   (mt/on-matrix (noise-function
-                 (conj (nth c/palette-dark-red 3) 1) 6 0.01
-                 #(map (partial * 260) (cosattractor % %2 0.008 0.07 2 1))))
+                 (conj (nth c/palette-dark-red 3) 1) 3 0.01
+                 #(map (partial * 150) (cosattractor % %2 0.008 0.25 1 1))
+                 #(map (partial * 100) (cosattractor % %2 0.004 0.12 -1 0.7))))
 
   #_(* 80 (noise/octave-noise2 % %2 0.01 6))
   #_(* 80 (* (Math/sin (* % (/ Math/PI 100)))

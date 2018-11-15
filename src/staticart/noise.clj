@@ -3,7 +3,7 @@
             [staticart.settings :refer [settings]]
             [thi.ng.math.noise :as noise]))
 
-(def octave-pow2 [1.0 2.0 4.0 8.0 16.0 32.0 64.0])
+(def octave-pow2 [1.0 2.0 4.0 8.0 16.0 32.0 64.0 128.0 256.0])
 
 (defn noise-in-octave
   [x y s o]
