@@ -6,5 +6,6 @@
   :dependencies [[org.clojure/clojure "1.9.0"]
                  [thi.ng/math "0.2.2-SNAPSHOT"]
                  [thi.ng/geom "0.0.1178-SNAPSHOT"]
+                 [thi.ng/color "1.3.0"]
                  [org.clojure/tools.trace "0.7.10"]
                  [quil "2.7.1"]])

@@ -2,12 +2,12 @@
   (:require [quil.core :as q]
             [quil.middleware :as mid]
             [staticart.settings :refer [settings]]
-            [staticart.sketch-6 :as sketch]))
+            [staticart.sketch-7 :as sketch]))
 
 (defn setup []
   (q/no-loop)
   (q/smooth)
-  (q/color-mode :hsb 360 100 100 1.0))
+  (q/color-mode :rgb 1.0 1.0 1.0 1.0))
 
 (q/defsketch staticart
   :title "My Quil Sketch"
