@@ -17,26 +17,42 @@
             [thi.ng.math.core :as m]
             [thi.ng.math.macros :as mm]))
 
-(def c1 (c/as-rgba (c/hsva 0.6 0.5 1)))
-(def c2 (c/as-rgba (c/hsva 0.7 0.8 0.5)))
-
-(def my-grad (grad/cosine-gradient 200 (grad/cosine-coefficients c1 c2)))
-
-(def shuffled-grad (shuffle my-grad))
-
 (defn pth [coll fact low high]
   (nth coll (int (m/map-interval-clamped fact low high 0 (- (count coll) 1)))))
 
-(defn noise-function [gradient octaves scale]
+(defn get-coloring-function []
+  (let [blue1 (c/as-rgba (c/hsva 0.6 0.5 1))
+        blue2 (c/as-rgba (c/hsva 0.7 0.5 0.4))
+        blue-grad (shuffle (grad/cosine-gradient 20 (grad/cosine-coefficients blue1 blue2)))
+        red1 (c/as-rgba (c/hsva 0.0 0.5 0.4))
+        red2 (c/as-rgba (c/hsva 0.1 0.8 0.8))
+        red-grad (shuffle (grad/cosine-gradient 20 (grad/cosine-coefficients red1 red2)))
+        grey1 (c/as-rgba (c/hsva 0.0 0.0 0.4))
+        grey2 (c/as-rgba (c/hsva 0.0 0.0 0.8))
+        grey-grad (shuffle (grad/cosine-gradient 20 (grad/cosine-coefficients grey1 grey2)))
+        green1 (c/as-rgba (c/hsva 0.3 0.5 0.4))
+        green2 (c/as-rgba (c/hsva 0.4 0.8 0.8))
+        green-grad (shuffle (grad/cosine-gradient 20 (grad/cosine-coefficients green1 green2)))]
+    (fn [n]
+      (cond
+        (< n -0.6) (pth grey-grad n -1 -0.6)
+        (< n -0.4) (pth green-grad n -0.6 -0.4)
+        (< n -0.3) (pth red-grad n -0.4 -0.3)
+        (< n -0.0) (pth blue-grad n -0.3 -0.0)
+        (< n 0.1) (pth red-grad n 0.0 0.1)
+        (< n 0.6) (pth green-grad n 0.1 0.6)
+        (>= n 0.6) (pth grey-grad n 0.6 1)))))
+
+(defn noise-function [coloring-function octaves scale]
   (fn [^"[[Lthi.ng.color.core.RGBA;" mt x y]
     (let [n (noise/octave-noise2 x y scale octaves)
-          newcolor (pth gradient n -1 1)]
+          newcolor (coloring-function n)]
       (cm/aset2c mt x y newcolor))))
 
 (defn draw []
   (d/background 0 0 1 1)
 
-  (cm/on-matrix (noise-function shuffled-grad 3 0.007))
+  (cm/on-matrix (noise-function (get-coloring-function) 2 0.001))
 
   #_(cm/on-matrix
    (fn [^"[[Lthi.ng.color.core.RGBA;" mt x y]
