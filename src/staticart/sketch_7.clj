@@ -17,46 +17,48 @@
             [thi.ng.math.core :as m]
             [thi.ng.math.macros :as mm]))
 
+(def colors [(c/as-rgba (c/css "rgba(237,106,90,1)"))
+             (c/as-rgba (c/css "rgba(244,241,187,1)"))
+             (c/as-rgba (c/css "rgba(155,193,188,1)"))
+             (c/as-rgba (c/css "rgba(92,164,169,1)"))
+             (c/as-rgba (c/css "rgba(230,235,224,1)"))])
+
+(def grad1 (shuffle (grad/cosine-gradient
+                     50 (grad/cosine-coefficients (nth colors 0) (nth colors 1)))))
+
+(def grad2 (grad/cosine-gradient
+            50 (grad/cosine-coefficients (nth colors 1) (nth colors 2))))
+
+(def grad3 (shuffle (grad/cosine-gradient
+                     50 (grad/cosine-coefficients (nth colors 2) (nth colors 0)))))
+
 (defn pth [coll fact low high]
   (nth coll (int (m/map-interval-clamped fact low high 0 (- (count coll) 1)))))
 
 (defn get-coloring-function []
-  (let [blue1 (c/as-rgba (c/hsva 0.6 0.5 1))
-        blue2 (c/as-rgba (c/hsva 0.7 0.5 0.4))
-        blue-grad (shuffle (grad/cosine-gradient 20 (grad/cosine-coefficients blue1 blue2)))
-        red1 (c/as-rgba (c/hsva 0.0 0.5 0.4))
-        red2 (c/as-rgba (c/hsva 0.1 0.8 0.8))
-        red-grad (shuffle (grad/cosine-gradient 20 (grad/cosine-coefficients red1 red2)))
-        grey1 (c/as-rgba (c/hsva 0.0 0.0 0.4))
-        grey2 (c/as-rgba (c/hsva 0.0 0.0 0.8))
-        grey-grad (shuffle (grad/cosine-gradient 20 (grad/cosine-coefficients grey1 grey2)))
-        green1 (c/as-rgba (c/hsva 0.3 0.5 0.4))
-        green2 (c/as-rgba (c/hsva 0.4 0.8 0.8))
-        green-grad (shuffle (grad/cosine-gradient 20 (grad/cosine-coefficients green1 green2)))]
+  (let [green-grad 0]
     (fn [n]
       (cond
-        (< n -0.6) (pth grey-grad n -1 -0.6)
-        (< n -0.4) (pth green-grad n -0.6 -0.4)
-        (< n -0.3) (pth red-grad n -0.4 -0.3)
-        (< n -0.0) (pth blue-grad n -0.3 -0.0)
-        (< n 0.1) (pth red-grad n 0.0 0.1)
-        (< n 0.6) (pth green-grad n 0.1 0.6)
-        (>= n 0.6) (pth grey-grad n 0.6 1)))))
+        (< n -0.15) (pth grad1 n -1 -0.15)
+        (< n 0.15) (pth grad2 n -0.15 0.15)
+        (>= n 0.15) (pth grad3 n 0.15 1)))))
 
-(defn noise-function [coloring-function octaves scale]
+(defn noise-function [coloring-function octaves scale turb]
   (fn [^"[[Lthi.ng.color.core.RGBA;" mt x y]
-    (let [n (noise/octave-noise2 x y scale octaves)
+    (let [[x' y'] (turb x y)
+          n (noise/octave-noise2 x' y' scale octaves)
           newcolor (coloring-function n)]
       (cm/aset2c mt x y newcolor))))
 
 (defn draw []
   (d/background 0 0 1 1)
 
-  (cm/on-matrix (noise-function (get-coloring-function) 2 0.001))
+  (cm/on-matrix (noise-function (get-coloring-function) 2 0.006
+                                (fn [x y] [x y])))
 
   #_(cm/on-matrix
-   (fn [^"[[Lthi.ng.color.core.RGBA;" mt x y]
-     (cm/aset2c mt x y (pth my-grad (/ (/ (+ x y) 2) 500) 0.2 0.8))))
+     (fn [^"[[Lthi.ng.color.core.RGBA;" mt x y]
+       (cm/aset2c mt x y (pth my-grad (/ (/ (+ x y) 2) 500) 0.2 0.8))))
 
   (cm/draw-matrix)
 
