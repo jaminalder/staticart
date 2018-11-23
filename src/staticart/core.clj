@@ -2,7 +2,7 @@
   (:require [quil.core :as q]
             [quil.middleware :as mid]
             [staticart.settings :refer [settings]]
-            [staticart.sketch-7 :as sketch]))
+            [staticart.sketch-8 :as sketch]))
 
 (defn setup []
   (q/no-loop)
