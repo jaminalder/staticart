@@ -82,16 +82,18 @@
        (cm/aset2c mt x y newcolor)))))
 
 (defn draw []
-  (d/background 0 0 1 1)
+  
+  (dotimes [n 50]
+    (d/background 0 0 1 1)
 
-  (cm/on-matrix (noise-function (get-coloring-function) 3 0.002
-                                (fn [x y] [(* x 1) (* y (rand-int 2))])))
+    (let [oct (+ 1 (rand-int 4))
+         scale (+ 0.0005 (rand 0.001))
+         offset (+ 2 (rand-int 2))]
 
-  #_(cm/on-matrix
-     (fn [^"[[Lthi.ng.color.core.RGBA;" mt x y]
-       (cm/aset2c mt x y (pth my-grad (/ (/ (+ x y) 2) 500) 0.2 0.8))))
+     (cm/on-matrix (noise-function (get-coloring-function) oct scale
+                                   (fn [x y] [(* x 1) (* y (rand-int offset))]))))
 
-  (cm/draw-matrix)
+   (cm/draw-matrix)
 
-  (d/save "output.jpg"))
+   (d/save (str "tmpout/output" (System/currentTimeMillis) ".tiff"))))
 
