@@ -1,5 +1,5 @@
 (ns staticart.settings)
 
 (def settings
-  {:width 500
-   :height 500})
+  {:width 2000
+   :height 2000})

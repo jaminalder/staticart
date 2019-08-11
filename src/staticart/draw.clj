@@ -5,6 +5,7 @@
 (def fill q/fill)
 (def no-fill q/no-fill)
 (def stroke q/stroke)
+(def stroke-weight q/stroke-weight)
 (def no-stroke q/no-stroke)
 (def save q/save)
 
@@ -20,11 +21,15 @@
   (when closed (apply q/vertex (first ps)))
   (q/end-shape))
 
-(defn curve-through-points [ps]
+(defn curve-through-points [ps & closed]
   (q/begin-shape)
   (apply q/curve-vertex (first ps))
   (doseq [p ps] (apply q/curve-vertex p))
-  (apply q/curve-vertex (last ps))
+  (if closed
+    (do
+      (apply q/curve-vertex (first ps))
+      (apply q/curve-vertex (second ps)))
+    (apply q/curve-vertex (last ps)))
   (q/end-shape))
 
 (defn debug-point [p]
